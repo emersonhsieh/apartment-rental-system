@@ -6,6 +6,7 @@ function machines(num_machines, key) {
 	this.master = new quilt.Machine({
 		provider: "Amazon",
 		size: "m4.large",
+		region: "us-west-1",
 		sshKeys: quilt.githubKeys(key),
 	});		
 
@@ -15,6 +16,7 @@ function machines(num_machines, key) {
 		this.machine_list.push(new quilt.Machine({
     		provider: "Amazon",
     		size: "m4.large",
+    		region: "us-west-1",
     		sshKeys: quilt.githubKeys(key),
     		diskSize: size,
 		}));
