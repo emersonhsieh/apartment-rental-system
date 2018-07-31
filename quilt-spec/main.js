@@ -12,6 +12,6 @@ var countNode = 3;
 const nodeRepository = 'tsaianson/node-apt-app';
 const apartmentApp = new nodeServer(countNode, nodeRepository);
 
+deployment.deploy(machines);
 apartmentApp.matchPlacements(machines.getSizes());
-
 deployment.deploy(apartmentApp);
