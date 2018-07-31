@@ -7,7 +7,6 @@ function machines(num_machines, key) {
 		provider: "Amazon",
 		size: "m4.large",
 		sshKeys: quilt.githubKeys(key),
-		diskSize: size,
 	});		
 
 	this.machine_list = []
@@ -18,7 +17,7 @@ function machines(num_machines, key) {
     		size: "m4.large",
     		sshKeys: quilt.githubKeys(key),
     		diskSize: size,
-		});
+		}));
 		this.sizes.push(size);
 	};
 
