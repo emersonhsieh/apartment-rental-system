@@ -1,55 +1,10 @@
 const quilt = require('@quilt/quilt');
 const nodeServer = require('./nodeServer');
+const machineFactory = require('./machines')
 
 const deployment = quilt.createDeployment({namespace: "TEMP", adminACL: ['0.0.0.0/0']});
 
-var machine0 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-});
-
-var machine1 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-    diskSize: 15,
-});
-
-var machine2 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-    diskSize: 16,
-});
-
-var machine3 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-    diskSize: 17,
-});
-
-var machine4 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-    diskSize: 18,
-});
-
-var machine5 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-    diskSize: 19,
-});
-
-var machine6 = new quilt.Machine({
-    provider: "Amazon",
-    size: "m4.large",
-    sshKeys: quilt.githubKeys('TsaiAnson'),
-    diskSize: 32,
-});
+var machines = new machineFactory(6, "hantaowang")
 
 var countNode = 3;
 const nodeRepository = 'tsaianson/node-apt-app';

@@ -13,12 +13,10 @@ function nodeServer(count, nodeRepo) {
 
     this.logstash = new Container('logstash', 'hantaowang/logstash-postgres');
 
-    this.kib = new Kibana(this.elastic, 5601);
-    this.kib1 = new Kibana(this.elastic, 5602);
-    this.kib2 = new Kibana(this.elastic, 5603);
-    this.kib3 = new Kibana(this.elastic, 5604);
-    this.kib4 = new Kibana(this.elastic, 5605);
-    this.kib5 = new Kibana(this.elastic, 5606);
+    this.kibanas = []
+    for (i = 0; i < 6 ; i++) { 
+        this.kibanas.push(new Kibana(this.elastic, 5601 + i));
+    }; 
 
     this.spark = spark;
 
@@ -46,14 +44,14 @@ function nodeServer(count, nodeRepo) {
 
     this.app = new Container('aptApp', nodeRepo, {
         command: ['node', 'server.js', '--port', '80'],
-    env:{
-        'mySQLHost': this.mysqlHost,
-        'elasticURL': this.elastic.uri(),
-        'postgresURL': this.postgresURL,
-        'PW': this.pw,
-        'HOST': this.postgresHost,
-        'PORT': this.postgresPort,
-        },
+        env:{
+            'mySQLHost': this.mysqlHost,
+            'elasticURL': this.elastic.uri(),
+            'postgresURL': this.postgresURL,
+            'PW': this.pw,
+            'HOST': this.postgresHost,
+            'PORT': this.postgresPort,
+            },
     }).replicate(this.instance_number);
 
     this.proxy = haproxy.simpleLoadBalancer(this.app);
@@ -75,39 +73,38 @@ function nodeServer(count, nodeRepo) {
     this.mysql.allowFrom(spark.masters, 3306);
     this.mysql.allowFrom(spark.workers, 3306);
 
-    this.machPlacements = function machPlacements(diskSizes) {
+    this.matchPlacements = function matchPlacements(diskSizes) {
 	//3 Per Machine - Requires 7 Machines
-    assert(diskSizes.length == 7);
+        assert(diskSizes.length == 7);
 
-    this.elastic.placeOn({diskSize: diskSizes[0]});
-    this.kib.placeOn({diskSize: diskSizes[0]});
+        this.elastic.placeOn({diskSize: diskSizes[0]});
+        this.kibanas[0].placeOn({diskSize: diskSizes[0]});
 
-    this.postgres.placeOn({diskSize: diskSizes[1]});
-    this.mysql.placeOn({diskSize: diskSizes[1]});
+        this.postgres.placeOn({diskSize: diskSizes[1]});
+        this.mysql.placeOn({diskSize: diskSizes[1]});
 
-    this.app[0].placeOn({diskSize: diskSizes[2]});
-    this.kib1.placeOn({diskSize: diskSizes[2]});
+        this.app[0].placeOn({diskSize: diskSizes[2]});
+        this.kibanas[1].placeOn({diskSize: diskSizes[2]});
 
-    this.app[1].placeOn({diskSize: diskSizes[3]});
-    this.kib2.placeOn({diskSize: diskSizes[3]});
+        this.app[1].placeOn({diskSize: diskSizes[3]});
+        this.kibanas[2].placeOn({diskSize: diskSizes[3]});
 
-    this.app[2].placeOn({diskSize: diskSizes[4]});
-    this.kib3.placeOn({diskSize: diskSizes[4]});
+        this.app[2].placeOn({diskSize: diskSizes[4]});
+        this.kibanas[3].placeOn({diskSize: diskSizes[4]});
 
-    this.proxy.placeOn({diskSize: diskSizes[5]});
-    this.kib4.placeOn({diskSize: diskSizes[5]});
+        this.proxy.placeOn({diskSize: diskSizes[5]});
+        this.kibanas[4].placeOn({diskSize: diskSizes[5]});
 
-    this.logstash.placeOn({diskSize: diskSizes[6]});
-    this.kib5.placeOn({diskSize: diskSizes[6]});
+        this.logstash.placeOn({diskSize: diskSizes[6]});
+        this.kibanas[5].placeOn({diskSize: diskSizes[6]});
 
-    this.spark.placeOn([diskSizes[5], diskSizes[0], diskSizes[1], diskSizes[2], diskSizes[3], diskSizes[4]]);
-    };
+        this.spark.placeOn([diskSizes[0], diskSizes[1], diskSizes[2], diskSizes[3], diskSizes[4], diskSizes[5]]);
+    };          
 
     this.deploy = function deploy(deployment) {
-        deployment.deploy([this.proxy, this.elastic, this.logstash, this.postgres, this.mysql, this.kib, this.kib1, this.kib2, this.kib3, this.kib4, this.kib5]);
-        for (i = 0; i < this.instance_number; i++) {
-            deployment.deploy(this.app[i]);
-        }
+        deployment.deploy([this.proxy, this.elastic, this.logstash, this.postgres, this.mysql]);
+        deployment.deploy(this.kibanas);
+        deployment.deploy(this.app);
         this.spark.deploy(deployment);
     };
 }

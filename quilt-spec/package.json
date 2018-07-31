@@ -5,10 +5,10 @@
     "author": "Anson Tsai",
     "license": "MIT",
     "dependencies": {
-        "@quilt/quilt": "file:../../quilt",
-        "@quilt/elasticsearch": "file:../../elasticsearch",
-        "@quilt/haproxy": "file:../../haproxy",
-        "@quilt/nodejs": "file:../../nodejs/",
+        "@quilt/quilt": "file:~/go/src/github.com/quilt/quilt",
+        "@quilt/elasticsearch": "file:~/depend/elasticsearch",
+        "@quilt/haproxy": "file:~/depend/haproxy",
+        "@quilt/nodejs": "file:~/depend/nodejs",
         "fs": "0.0.1-security"
     }
 }
