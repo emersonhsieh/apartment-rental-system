@@ -2,11 +2,10 @@ const quilt = require('@quilt/quilt');
 const nodeServer = require('./nodeServer3PM');
 const machineFactory = require('./machines')
 
-const githubKey = "hantaowang"
+const namespace = "apartment-app-" + Math.floor(Math.random() * 10000).toString();
+const deployment = quilt.createDeployment({namespace: namespace, adminACL: ['0.0.0.0/0']});
 
-const deployment = quilt.createDeployment({namespace: githubKey + "-apartment-app", adminACL: ['0.0.0.0/0']});
-
-var machines = new machineFactory(7, githubKey)
+var machines = new machineFactory(7)
 
 var countNode = 3;
 const nodeRepository = 'tsaianson/node-apt-app';

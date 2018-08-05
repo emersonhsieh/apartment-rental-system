@@ -1,7 +1,7 @@
 const fs = require('fs');
 const quilt = require('@quilt/quilt');
 
-function machines(num_machines, key) {
+function machines(num_machines) {
 
         this.key = [fs.readFileSync("/home/ubuntu/.ssh/id_rsa.pub", "utf8").trim()];
 
