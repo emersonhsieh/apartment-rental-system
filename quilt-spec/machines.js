@@ -1,13 +1,15 @@
+const fs = require('fs');
 const quilt = require('@quilt/quilt');
 
-
 function machines(num_machines, key) {
+
+        this.key = [fs.readFileSync("/home/ubuntu/.ssh/id_rsa.pub", "utf8").trim()];
 
 	this.master = new quilt.Machine({
 		provider: "Amazon",
 		size: "m4.large",
 		region: "us-west-1",
-		sshKeys: quilt.githubKeys(key),
+		sshKeys: this.key,
 	});		
 
 	this.machine_list = []
@@ -17,17 +19,17 @@ function machines(num_machines, key) {
     		provider: "Amazon",
     		size: "m4.large",
     		region: "us-west-1",
-    		sshKeys: quilt.githubKeys(key),
+    		sshKeys: this.key,
     		diskSize: size,
-		}));
-		this.sizes.push(size);
+	    }));
+	    this.sizes.push(size);
 	};
 
 	this.deploy = function deploy(deployment) {
 		deployment.deploy(this.master.asMaster());
-		forEach(function(entry) {
+		this.machine_list.forEach(function(entry) {
     		deployment.deploy(entry.asWorker());
-		});
+	    });
     };
 
     this.getSizes = function getSizes() {
