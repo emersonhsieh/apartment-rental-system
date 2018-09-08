@@ -5,7 +5,7 @@ const machineFactory = require('./machines')
 const namespace = "apartment-app-" + Math.floor(Math.random() * 10000).toString();
 const deployment = quilt.createDeployment({namespace: namespace, adminACL: ['0.0.0.0/0']});
 
-var machines = new machineFactory(4)
+var machines = new machineFactory(3)
 
 var countNode = 3;
 const nodeRepository = 'tsaianson/node-apt-app';

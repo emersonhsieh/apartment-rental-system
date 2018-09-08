@@ -75,25 +75,26 @@ function nodeServer(count, nodeRepo) {
 
     this.matchPlacements = function matchPlacements(diskSizes) {
 	//3 Per Machine - Requires 7 Machines
-        assert(diskSizes.length == 2);
+        assert(diskSizes.length == 3);
 
+        this.app[0].placeOn({diskSize: diskSizes[0]});
         this.logstash.placeOn({diskSize: diskSizes[0]});
         this.proxy.placeOn({diskSize: diskSizes[0]});
-        this.elastic.placeOn({diskSize: diskSizes[0]});
-        this.postgres.placeOn({diskSize: diskSizes[0]});
         this.mysql.placeOn({diskSize: diskSizes[0]});
-        this.kibanas[0].placeOn({diskSize: diskSizes[0]});
-        this.kibanas[1].placeOn({diskSize: diskSizes[0]});
-        this.kibanas[2].placeOn({diskSize: diskSizes[0]});
-        this.kibanas[3].placeOn({diskSize: diskSizes[0]});
-        this.kibanas[4].placeOn({diskSize: diskSizes[0]});
-        this.kibanas[5].placeOn({diskSize: diskSizes[0]});
 
-        this.app[0].placeOn({diskSize: diskSizes[1]});
         this.app[1].placeOn({diskSize: diskSizes[1]});
-        this.app[2].placeOn({diskSize: diskSizes[1]});
+        this.postgres.placeOn({diskSize: diskSizes[1]});
+        this.kibanas[0].placeOn({diskSize: diskSizes[1]});
+        this.kibanas[1].placeOn({diskSize: diskSizes[1]});
+        this.kibanas[2].placeOn({diskSize: diskSizes[1]});
 
-        this.spark.placeOn([diskSizes[0], diskSizes[1]]);
+        this.app[2].placeOn({diskSize: diskSizes[2]});
+        this.kibanas[3].placeOn({diskSize: diskSizes[2]});
+        this.kibanas[4].placeOn({diskSize: diskSizes[2]});
+        this.kibanas[5].placeOn({diskSize: diskSizes[2]});
+        this.elastic.placeOn({diskSize: diskSizes[2]});
+
+        this.spark.placeOn([diskSizes[0], diskSizes[0], diskSizes[0]]);
     };          
 
     this.deploy = function deploy(deployment) {
